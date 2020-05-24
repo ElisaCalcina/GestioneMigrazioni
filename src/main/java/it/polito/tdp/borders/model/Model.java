@@ -17,9 +17,11 @@ public class Model {
 	
 	private Graph<Country, DefaultEdge> graph ;
 	private Map<Integer,Country> countriesMap ;
+	private Simulatore sim;
 	
 	public Model() {
 		this.countriesMap = new HashMap<>() ;
+		this.sim= new Simulatore();
 
 	}
 	
@@ -42,6 +44,14 @@ public class Model {
 		}
 	}
 	
+	//popolo la tendina
+	public List<Country> getCountries() {
+		List<Country> countries= new ArrayList<Country>();
+		countries.addAll(this.graph.vertexSet());
+		Collections.sort(countries);
+		return countries;
+	}
+	
 	public List<CountryAndNumber> getCountryAndNumber() {
 		List<CountryAndNumber> list = new ArrayList<>() ;
 		
@@ -51,5 +61,31 @@ public class Model {
 		Collections.sort(list);
 		return list ;
 	}
+	
+	//metodo che crea simulatore ed esegue simulzione
+	public void simula(Country partenza) {
+		if(this.graph!=null) {
+			sim.init(partenza, this.graph);
+			sim.run();
+		}
+	}
+	
+	public Integer getT() {
+		return this.sim.getT();
+	}
+	
+	//per stamparla nel controller --> il testo mi dice cosa vuole
+	public List<CountryAndNumber> getStanziali(){
+		Map<Country, Integer> stanziali= this.sim.getStanziali();
+		List<CountryAndNumber> res= new ArrayList<>();
+		for(Country c: stanziali.keySet()) {
+			CountryAndNumber cn= new CountryAndNumber(c,stanziali.get(c));
+			res.add(cn);
+		}
+		Collections.sort(res);
+		return res;
+	}
+
+	
 
 }
